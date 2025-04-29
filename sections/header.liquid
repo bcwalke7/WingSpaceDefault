@@ -1,12 +1,166 @@
-<header class="header">
-    <div class="header__content">
-        <a href="{{ routes.root_url }}" class="header__logo">{{ shop.name }}</a>
+<style>
+    .headerMain {
+        display: flex;
+    }
 
-        <nav class="header__nav">
-            {% for link in linklists.main-menu.links %}
-                <a href="{{ link.url }}">{{ link.title }}</a>
-            {% endfor %}
-        </nav>
-        
+    .headerLogo {
+        flex: 1;
+    }
+
+    .headerNav {
+        flex: 1;
+    }
+
+    .headerControls {
+        flex: 1;
+    }
+
+    svg {
+        fill: black;
+    }
+</style>
+<header class="header">
+    <div class="headerContent pageWidth">
+        <div class="headerMain">
+            {% if section.settings.logo_svg != blank %}
+                <div class="headerLogo" aria-label="{{ shop.name }}">
+                    {{ section.settings.logo_svg }}
+                </div>
+            {% else %}
+                <a href="{{ routes.root_url }}" class="headerLogoText">
+                    {{ shop.name }}
+                </a>
+            {% endif %}
+
+            <nav class="headerNav">
+                {% for block in section.blocks %}
+                    {% case block.type %}
+                        {% when 'link' %}
+                            <a href="{{ block.settings.url }}" class="headerNavLink">
+                                {{ block.settings.label }}
+                            </a>
+
+                        {% when 'dropdown' %}
+                            <details class="headerNavDropdown">
+                                <summary class="headerNavLink">{{ block.settings.label }}</summary>
+                                <div class="headerNavDropdownMenu">
+                                    {% assign menu = linklists[block.settings.links] %}
+                                    {% if menu.links.size > 0 %}
+                                        {% for child in menu.links %}
+                                            <a href="{{ child.url }}" class="headerNavDropdownLink">
+                                                {{ child.title }}
+                                            </a>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </details>
+                    {% endcase %}
+                {% endfor %}
+            </nav>
+
+            <div class="headerControls">
+                <a href="{{ routes.account_login_url }}" class="headerControlLink">
+                    {% if section.settings.login_svg != blank %}
+                        <span class="headerControlIcon" aria-hidden="true">
+        {{ section.settings.login_svg }}
+      </span>
+                    {% elsif section.settings.login_image != blank %}
+                        <img src="{{ section.settings.login_image | image_url: width: 50 }}" alt="Log in"
+                             class="headerControlImage" loading="lazy">
+                    {% else %}
+                        {{ 'customer.login.title' | t }}
+                    {% endif %}
+                </a>
+
+                <a href="{{ routes.cart_url }}" class="headerControlLink">
+                    {% if section.settings.cart_svg != blank %}
+                        <span class="headerControlIcon" aria-hidden="true">{{ section.settings.cart_svg }}</span>
+                    {% elsif section.settings.cart_image != blank %}
+                        <img src="{{ section.settings.cart_image | image_url: width: 50 }}" alt="Cart"
+                             class="headerControlImage" loading="lazy">
+                    {% else %}
+                        {{ 'sections.cart.title' | t }}
+                    {% endif %}
+                </a>
+            </div>
+        </div>
     </div>
 </header>
+{% schema %}
+{
+  "name": "Header",
+  "tag": "section",
+  "class": "headerSection",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "logo_svg",
+      "label": "Custom SVG Logo",
+      "info": "Paste SVG code here or leave blank to show store name."
+    },
+    {
+      "type": "textarea",
+      "id": "login_svg",
+      "label": "Login Icon SVG",
+      "info": "Paste SVG code here for login icon. Leave blank to use text."
+    },
+    {
+      "type": "image_picker",
+      "id": "login_image",
+      "label": "Login Icon Image",
+      "info": "Optional: Upload an image instead of SVG for login icon."
+    },
+    {
+      "type": "textarea",
+      "id": "cart_svg",
+      "label": "Cart Icon SVG",
+      "info": "Paste SVG code here for cart icon. Leave blank to use text."
+    },
+    {
+      "type": "image_picker",
+      "id": "cart_image",
+      "label": "Cart Icon Image",
+      "info": "Optional: Upload an image instead of SVG for cart icon."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Link label"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link URL"
+        }
+      ]
+    },
+    {
+      "type": "dropdown",
+      "name": "Dropdown",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Dropdown label"
+        },
+        {
+          "type": "link_list",
+          "id": "links",
+          "label": "Select navigation menu"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header"
+    }
+  ]
+}
+{% endschema %}

@@ -45,5 +45,10 @@
       "newsletter_label": "Subscribe to our emails",
       "social_label": "Follow us"
     }
+  },
+  "customer": {
+    "login": {
+      "title": "Log in"
+    }
   }
 }
