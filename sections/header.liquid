@@ -1,53 +1,368 @@
 <style>
+    .header {
+        background-color: var(--medium-grey);
+        width: 100%;
+    }
+
+    .headerContent {
+        width: 100%;
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
     .headerMain {
+        width: 100%;
+        padding: 40px 24px;
         display: flex;
+        gap: 24px;
     }
 
-    .headerLogo {
+    .headerMainLogo {
         flex: 1;
     }
 
-    .headerNav {
+    .headerMainLogo svg {
+        fill: var(--white);
+        width: 250px;
+    }
+
+    .headerMainNav {
         flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        color: var(--white);
+    }
+
+    .headerMainNavLink, .headerMainNavDropdown summary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        list-style: none;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .headerMainNavDropdown {
+        position: relative;
+    }
+
+    .headerMainNavDropdown summary {
+        list-style: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .headerMainNavDropdown summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .headerMainNavDropdownMenu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        transform: translateY(-10px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 250ms ease, transform 250ms ease;
+        z-index: 999;
+        min-width: 160px;
+        background: var(--white);
+        border: 1px solid var(--medium-grey);
+        padding: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .headerMainNavDropdownMenu.animate-in {
+        opacity: 1;
+        transform: translateY(10px);
+        pointer-events: auto;
+    }
+
+
+    .headerBlockIcon {
+        width: 10px;
+        transition: transform 250ms ease;
+        margin: 0;
+    }
+
+    .headerMainNavDropdown[open] .headerBlockIcon {
+        transform: rotate(180deg);
+    }
+
+    .headerMainNavDropdownLink {
+        padding: 0.5rem 0;
+        color: var(--medium-grey);
     }
 
     .headerControls {
         flex: 1;
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+        justify-content: flex-end;
     }
 
-    svg {
-        fill: black;
+    .headerControlLink {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--white);
+        text-decoration: none;
+    }
+
+    .headerControlImage {
+        width: 1.5rem;
+        height: auto;
+    }
+
+    .headerControlIconRight {
+        order: 2;
+    }
+
+    .headerControlIcon svg {
+        fill: var(--white);
+    }
+
+    .headerBlockIconRight {
+        order: 2;
+    }
+
+    .mobileMenuToggle,
+    .mobileMenuDrawer,
+    .mobileMenuBackdrop {
+        display: none;
+    }
+
+    @media screen and (max-width: 800px) {
+        .headerMain {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+        }
+
+        .headerMainNav,
+        .headerControls a[href*="account"] {
+            display: none !important;
+        }
+
+        .mobileMenuToggle {
+            display: block;
+            background: none;
+            border: none;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .headerMainLogo {
+            text-align: center;
+            flex: 1;
+        }
+
+        .headerControls {
+            justify-content: flex-end;
+            gap: 0;
+        }
+
+        .mobileMenuDrawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 80%;
+            max-width: 320px;
+            height: 100vh;
+            background: white;
+            transform: translateX(-100%);
+            opacity: 0;
+            transition: transform 300ms ease, opacity 300ms ease;
+            z-index: 9999;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobileMenuDrawer.open {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .mobileMenuBackdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 300ms ease;
+        }
+
+        .mobileMenuBackdrop.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .mobileMenuClose {
+            align-self: flex-end;
+            font-size: 2rem;
+            background: none;
+            border: none;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+
+        .mobileNavLink,
+        .mobileNavDropdownLabel,
+        .mobileNavDropdownLink,
+        .mobileAuthLinks a {
+            display: block;
+            padding: 0.75rem 0;
+            color: var(--medium-grey);
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+
+        .mobileNavDropdownMenu {
+            padding-left: 1rem;
+        }
+
+        .mobileLogin svg {
+            fill: var(--black);
+            width: 1.5rem;
+        }
     }
 </style>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const dropdowns = document.querySelectorAll(".headerMainNavDropdown");
+
+        dropdowns.forEach(dropdown => {
+            const menu = dropdown.querySelector(".headerMainNavDropdownMenu");
+
+            dropdown.addEventListener("toggle", () => {
+                const summary = dropdown.querySelector("summary");
+                summary.setAttribute("aria-expanded", dropdown.open);
+                if (dropdown.open) {
+                    menu.classList.add("animate-in");
+                } else {
+                    menu.classList.remove("animate-in");
+                }
+            });
+        });
+
+        const toggle = document.querySelector(".mobileMenuToggle");
+        const drawer = document.querySelector(".mobileMenuDrawer");
+        const backdrop = document.querySelector(".mobileMenuBackdrop");
+        const closeBtn = document.querySelector(".mobileMenuClose");
+
+        toggle?.addEventListener("click", () => {
+            drawer?.classList.add("open");
+            backdrop?.classList.add("show");
+        });
+
+        closeBtn?.addEventListener("click", () => {
+            drawer?.classList.remove("open");
+            backdrop?.classList.remove("show");
+        });
+
+        backdrop?.addEventListener("click", () => {
+            drawer?.classList.remove("open");
+            backdrop?.classList.remove("show");
+        });
+    });
+</script>
+
 <header class="header">
-    <div class="headerContent pageWidth">
+    <div class="headerContent">
         <div class="headerMain">
+            <button class="mobileMenuToggle" aria-label="Open menu">
+                <svg viewBox="0 0 100 80" width="24" height="24" fill="white">
+                    <rect width="100" height="10"></rect>
+                    <rect y="30" width="100" height="10"></rect>
+                    <rect y="60" width="100" height="10"></rect>
+                </svg>
+            </button>
             {% if section.settings.logo_svg != blank %}
-                <div class="headerLogo" aria-label="{{ shop.name }}">
+                <div class="headerMainLogo" aria-label="{{ shop.name }}">
                     {{ section.settings.logo_svg }}
                 </div>
             {% else %}
-                <a href="{{ routes.root_url }}" class="headerLogoText">
+                <a class="headerMainLogoText" href="{{ routes.root_url }}">
                     {{ shop.name }}
                 </a>
             {% endif %}
 
-            <nav class="headerNav">
+            <nav class="headerMainNav">
                 {% for block in section.blocks %}
                     {% case block.type %}
                         {% when 'link' %}
-                            <a href="{{ block.settings.url }}" class="headerNavLink">
-                                {{ block.settings.label }}
+                            <a class="headerMainNavLink" href="{{ block.settings.url }}">
+                                {% if block.settings.icon_position == 'left' %}
+                                    {% if block.settings.icon_svg != blank %}
+                                        <span class="headerBlockIcon"
+                                              aria-hidden="true">{{ block.settings.icon_svg }}</span>
+                                    {% elsif block.settings.icon_image != blank %}
+                                        <img src="{{ block.settings.icon_image | image_url: width: 24 }}" alt=""
+                                             class="headerBlockImage" loading="lazy">
+                                    {% endif %}
+                                {% endif %}
+                                {% if block.settings.show_text %}
+                                    {{ block.settings.label }}
+                                {% endif %}
+                                {% if block.settings.icon_position == 'right' %}
+                                    {% if block.settings.icon_svg != blank %}
+                                        <span class="headerBlockIcon headerBlockIconRight"
+                                              aria-hidden="true">{{ block.settings.icon_svg }}</span>
+                                    {% elsif block.settings.icon_image != blank %}
+                                        <img src="{{ block.settings.icon_image | image_url: width: 24 }}" alt=""
+                                             class="headerBlockImage headerBlockIconRight" loading="lazy">
+                                    {% endif %}
+                                {% endif %}
                             </a>
 
                         {% when 'dropdown' %}
-                            <details class="headerNavDropdown">
-                                <summary class="headerNavLink">{{ block.settings.label }}</summary>
-                                <div class="headerNavDropdownMenu">
+                            <details class="headerMainNavDropdown" aria-haspopup="true">
+                                <summary class="headerMainNavLink" aria-expanded="false"
+                                         aria-controls="dropdown-{{ forloop.index }}">
+                                    {% if block.settings.icon_position == 'left' %}
+                                        {% if block.settings.icon_svg != blank %}
+                                            <span class="headerBlockIcon"
+                                                  aria-hidden="true">{{ block.settings.icon_svg }}</span>
+                                        {% elsif block.settings.icon_image != blank %}
+                                            <img src="{{ block.settings.icon_image | image_url: width: 24 }}" alt=""
+                                                 class="headerBlockImage" loading="lazy">
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if block.settings.show_text %}
+                                        {{ block.settings.label }}
+                                    {% endif %}
+                                    {% if block.settings.icon_position == 'right' %}
+                                        {% if block.settings.icon_svg != blank %}
+                                            <span class="headerBlockIcon headerBlockIconRight"
+                                                  aria-hidden="true">{{ block.settings.icon_svg }}</span>
+                                        {% elsif block.settings.icon_image != blank %}
+                                            <img src="{{ block.settings.icon_image | image_url: width: 24 }}" alt=""
+                                                 class="headerBlockImage headerBlockIconRight" loading="lazy">
+                                        {% endif %}
+                                    {% endif %}
+                                </summary>
+                                <div class="headerMainNavDropdownMenu">
                                     {% assign menu = linklists[block.settings.links] %}
                                     {% if menu.links.size > 0 %}
                                         {% for child in menu.links %}
-                                            <a href="{{ child.url }}" class="headerNavDropdownLink">
+                                            <a href="{{ child.url }}" class="headerMainNavDropdownLink">
                                                 {{ child.title }}
                                             </a>
                                         {% endfor %}
@@ -60,32 +375,107 @@
 
             <div class="headerControls">
                 <a href="{{ routes.account_login_url }}" class="headerControlLink">
-                    {% if section.settings.login_svg != blank %}
-                        <span class="headerControlIcon" aria-hidden="true">
-        {{ section.settings.login_svg }}
-      </span>
-                    {% elsif section.settings.login_image != blank %}
-                        <img src="{{ section.settings.login_image | image_url: width: 50 }}" alt="Log in"
-                             class="headerControlImage" loading="lazy">
-                    {% else %}
-                        {{ 'customer.login.title' | t }}
+                    {% if section.settings.login_icon_position == 'left' %}
+                        {% if section.settings.login_svg != blank %}
+                            <span class="headerControlIcon">{{ section.settings.login_svg }}</span>
+                        {% elsif section.settings.login_image != blank %}
+                            <img src="{{ section.settings.login_image | image_url: width: 24 }}" alt="Login"
+                                 class="headerControlImage" loading="lazy">
+                        {% endif %}
+                    {% endif %}
+
+                    {% if section.settings.show_login_text %}
+                        <span class="headerControlText">{{ 'customer.login.title' | t }}</span>
+                    {% endif %}
+
+                    {% if section.settings.login_icon_position == 'right' %}
+                        {% if section.settings.login_svg != blank %}
+                            <span class="headerControlIcon headerControlIconRight">{{ section.settings.login_svg }}</span>
+                        {% elsif section.settings.login_image != blank %}
+                            <img src="{{ section.settings.login_image | image_url: width: 24 }}" alt="Login"
+                                 class="headerControlImage headerControlIconRight" loading="lazy">
+                        {% endif %}
                     {% endif %}
                 </a>
 
                 <a href="{{ routes.cart_url }}" class="headerControlLink">
-                    {% if section.settings.cart_svg != blank %}
-                        <span class="headerControlIcon" aria-hidden="true">{{ section.settings.cart_svg }}</span>
-                    {% elsif section.settings.cart_image != blank %}
-                        <img src="{{ section.settings.cart_image | image_url: width: 50 }}" alt="Cart"
-                             class="headerControlImage" loading="lazy">
-                    {% else %}
-                        {{ 'sections.cart.title' | t }}
+                    {% if section.settings.cart_icon_position == 'left' %}
+                        {% if section.settings.cart_svg != blank %}
+                            <span class="headerControlIcon">{{ section.settings.cart_svg }}</span>
+                        {% elsif section.settings.cart_image != blank %}
+                            <img src="{{ section.settings.cart_image | image_url: width: 24 }}" alt="Cart"
+                                 class="headerControlImage" loading="lazy">
+                        {% endif %}
+                    {% endif %}
+
+                    {% if section.settings.show_cart_text %}
+                        <span class="headerControlText">{{ 'sections.cart.title' | t }}</span>
+                    {% endif %}
+
+                    {% if section.settings.cart_icon_position == 'right' %}
+                        {% if section.settings.cart_svg != blank %}
+                            <span class="headerControlIcon headerControlIconRight">{{ section.settings.cart_svg }}</span>
+                        {% elsif section.settings.cart_image != blank %}
+                            <img src="{{ section.settings.cart_image | image_url: width: 24 }}" alt="Cart"
+                                 class="headerControlImage headerControlIconRight" loading="lazy">
+                        {% endif %}
                     {% endif %}
                 </a>
+
             </div>
         </div>
     </div>
+    <div class="mobileMenuBackdrop"></div>
+    <div class="mobileMenuDrawer">
+        <button class="mobileMenuClose" aria-label="Close menu">&times;</button>
+        <nav class="mobileNav">
+            {% for block in section.blocks %}
+                {% case block.type %}
+                    {% when 'link' %}
+                        <a href="{{ block.settings.url }}" class="mobileNavLink">{{ block.settings.label }}</a>
+                    {% when 'dropdown' %}
+                        {% assign menu = linklists[block.settings.links] %}
+                        <div class="mobileNavDropdown">
+                            <span class="mobileNavDropdownLabel">{{ block.settings.label }}</span>
+                            {% if menu.links.size > 0 %}
+                                <div class="mobileNavDropdownMenu">
+                                    {% for child in menu.links %}
+                                        <a href="{{ child.url }}" class="mobileNavDropdownLink">{{ child.title }}</a>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                {% endcase %}
+            {% endfor %}
+            <div class="mobileAuthLinks">
+                <a href="{{ routes.account_login_url }}" class="mobileNavLink">
+                    {% if section.settings.login_icon_position == 'left' %}
+                        {% if section.settings.login_svg != blank %}
+                            <span class="headerControlIcon mobileLogin">{{ section.settings.login_svg }}</span>
+                        {% elsif section.settings.login_image != blank %}
+                            <img src="{{ section.settings.login_image | image_url: width: 24 }}" alt="Login"
+                                 class="headerControlImage" loading="lazy">
+                        {% endif %}
+                    {% endif %}
+
+                    {% if section.settings.show_login_text %}
+                        <span class="headerControlText">{{ 'customer.login.title' | t }}</span>
+                    {% endif %}
+
+                    {% if section.settings.login_icon_position == 'right' %}
+                        {% if section.settings.login_svg != blank %}
+                            <span class="headerControlIcon headerControlIconRight">{{ section.settings.login_svg }}</span>
+                        {% elsif section.settings.login_image != blank %}
+                            <img src="{{ section.settings.login_image | image_url: width: 24 }}" alt="Login"
+                                 class="headerControlImage headerControlIconRight" loading="lazy">
+                        {% endif %}
+                    {% endif %}
+                </a>
+            </div>
+        </nav>
+    </div>
 </header>
+
 {% schema %}
 {
   "name": "Header",
@@ -99,28 +489,70 @@
       "info": "Paste SVG code here or leave blank to show store name."
     },
     {
+      "type": "checkbox",
+      "id": "show_login_text",
+      "label": "Show login text",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "login_icon_position",
+      "label": "Login icon position",
+      "options": [
+        {
+          "label": "Left",
+          "value": "left"
+        },
+        {
+          "label": "Right",
+          "value": "right"
+        }
+      ],
+      "default": "left"
+    },
+    {
       "type": "textarea",
       "id": "login_svg",
       "label": "Login Icon SVG",
-      "info": "Paste SVG code here for login icon. Leave blank to use text."
+      "info": "Paste SVG code here for login icon. Leave blank to use image/text."
     },
     {
       "type": "image_picker",
       "id": "login_image",
-      "label": "Login Icon Image",
-      "info": "Optional: Upload an image instead of SVG for login icon."
+      "label": "Login Icon Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart_text",
+      "label": "Show cart text",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "cart_icon_position",
+      "label": "Cart icon position",
+      "options": [
+        {
+          "label": "Left",
+          "value": "left"
+        },
+        {
+          "label": "Right",
+          "value": "right"
+        }
+      ],
+      "default": "left"
     },
     {
       "type": "textarea",
       "id": "cart_svg",
       "label": "Cart Icon SVG",
-      "info": "Paste SVG code here for cart icon. Leave blank to use text."
+      "info": "Paste SVG code here for cart icon. Leave blank to use image/text."
     },
     {
       "type": "image_picker",
       "id": "cart_image",
-      "label": "Cart Icon Image",
-      "info": "Optional: Upload an image instead of SVG for cart icon."
+      "label": "Cart Icon Image"
     }
   ],
   "blocks": [
@@ -137,6 +569,39 @@
           "type": "url",
           "id": "url",
           "label": "Link URL"
+        },
+        {
+          "type": "textarea",
+          "id": "icon_svg",
+          "label": "Custom SVG Icon",
+          "info": "Optional: Paste SVG code here."
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Custom Image Icon"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_text",
+          "label": "Show text label",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "icon_position",
+          "label": "Icon Position",
+          "options": [
+            {
+              "label": "Left",
+              "value": "left"
+            },
+            {
+              "label": "Right",
+              "value": "right"
+            }
+          ],
+          "default": "left"
         }
       ]
     },
@@ -153,6 +618,39 @@
           "type": "link_list",
           "id": "links",
           "label": "Select navigation menu"
+        },
+        {
+          "type": "textarea",
+          "id": "icon_svg",
+          "label": "Custom SVG Icon",
+          "info": "Optional: Paste SVG code here."
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Custom Image Icon"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_text",
+          "label": "Show text label",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "icon_position",
+          "label": "Icon Position",
+          "options": [
+            {
+              "label": "Left",
+              "value": "left"
+            },
+            {
+              "label": "Right",
+              "value": "right"
+            }
+          ],
+          "default": "left"
         }
       ]
     }

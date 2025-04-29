@@ -75,68 +75,45 @@ h1, h2, h3, h4, h5, h6 {
 /* === 2. BASE SETTINGS === */
 :root {
     /* === COLORS === */
-    --color-text: #111111;
-    --color-background: #ffffff;
-    --color-accent: #1a73e8;
-    --color-accent-dark: #0c47a1;
-    --color-border: #e0e0e0;
-    --color-muted: #999999;
+    --white: #FFFFFF;
+    --black: #000000;
+    --light-grey: #AAAAAA;
+    --medium-grey: #666666;
+    --dark-grey: #3D3D3D;
 }
 
 /* Set basic font sizing, spacing, and page behavior */
 html {
-    font-size: 62.5%; /* 1rem = 10px */
+    font-size: 16px;
 }
 
 body {
     font-family: system-ui, sans-serif;
-    font-size: 1.5rem; /* 15px base font */
-    font-weight: 400;
-    line-height: 1.6;
-    color: #111;
-    background: #fff;
-    min-height: 100vh;
+    font-size: 1rem;
 }
 
-/* Basic layout helpers */
-.container,
-.page-width {
-    max-width: 1200px;
-    margin-inline: auto;
-    padding-inline: 2rem;
-}
 
 /* Buttons */
 button,
 .button {
-    background-color: #111;
-    color: #fff;
-    padding: 1rem 2rem;
-    font-weight: 600;
-    text-align: center;
-    cursor: pointer;
-    display: inline-block;
-    transition: background 0.2s ease;
+
 }
 
 button:hover,
 .button:hover {
-    background-color: #333;
+
 }
 
 /* Inputs */
 input,
 textarea,
 select {
-    width: 100%;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 0.4rem;
+
 }
 
 /* Headings (basic hierarchy) */
 h1 {
-    font-size: 3.2rem;
+    font-size: 45px;
     font-weight: 700;
 }
 
@@ -160,11 +137,14 @@ a {
     color: inherit;
 }
 
-/* Small utility helpers */
-.text-center {
-    text-align: center;
-}
-
 .hidden {
-    display: none !important;
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
 }
