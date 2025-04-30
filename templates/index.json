@@ -12,9 +12,20 @@
     "main": {
       "type": "main-page",
       "settings": {}
+    },
+    "section_hero_ntE639": {
+      "type": "section-hero",
+      "name": "Hero",
+      "settings": {
+        "heading": "Lorem ipsum dolor sit amet.",
+        "subheading": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.",
+        "button_text": "Shop Now",
+        "button_link": "shopify://collections/all"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "section_hero_ntE639"
   ]
 }

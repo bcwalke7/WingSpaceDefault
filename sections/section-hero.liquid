@@ -1,0 +1,86 @@
+<style>
+    .heroSection {
+        background-color: var(--medium-grey);
+        color: var(--white);
+        padding: 6rem 1.5rem;
+        text-align: center;
+    }
+
+    .heroHeading {
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+    }
+
+    .heroSubheading {
+        font-size: 1.25rem;
+        font-weight: 400;
+        max-width: 640px;
+        margin: 0 auto 2.5rem;
+        color: var(--light-grey);
+    }
+
+    .heroButtonWrapper {
+        display: flex;
+        justify-content: center;
+    }
+
+    .heroButton {
+        background-color: var(--black);
+        color: var(--white);
+        font-size: 1rem;
+        padding: 0.75rem 2rem;
+        border-radius: 2rem;
+        text-decoration: none;
+        transition: background-color 200ms ease;
+    }
+
+    .heroButton:hover {
+        background-color: var(--dark-grey);
+    }
+</style>
+
+<section id="{{ section.id }}" class="heroSection">
+    <h1 class="heroHeading">{{ section.settings.heading }}</h1>
+    <h2 class="heroSubheading">{{ section.settings.subheading }}</h2>
+    <div class="heroButtonWrapper">
+        {% render 'custom-button', button_text: section.settings.button_text, button_link: section.settings.button_link %}
+    </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Lorem ipsum dolor sit amet."
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero"
+    }
+  ]
+}
+{% endschema %}

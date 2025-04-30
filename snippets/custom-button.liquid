@@ -1,0 +1,6 @@
+{% assign button_text = button_text | default: 'Click Me' %}
+{% assign button_link = button_link | default: '#' %}
+
+<a href="{{ button_link }}" class="customButton">
+    {{ button_text }}
+</a>

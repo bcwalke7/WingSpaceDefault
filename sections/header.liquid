@@ -253,7 +253,7 @@
 
             dropdown.addEventListener("toggle", () => {
                 const summary = dropdown.querySelector("summary");
-                summary.setAttribute("aria-expanded", dropdown.open);       
+                summary.setAttribute("aria-expanded", dropdown.open);
                 if (dropdown.open) {
                     menu.classList.add("animate-in");
                 } else {
@@ -295,9 +295,9 @@
                 </svg>
             </button>
             {% if section.settings.logo_svg != blank %}
-                <div class="headerMainLogo" aria-label="{{ shop.name }}">
+                <a class="headerMainLogo" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
                     {{ section.settings.logo_svg }}
-                </div>
+                </a>
             {% else %}
                 <a class="headerMainLogoText" href="{{ routes.root_url }}">
                     {{ shop.name }}
@@ -653,11 +653,6 @@
           "default": "left"
         }
       ]
-    }
-  ],
-  "presets": [
-    {
-      "name": "Header"
     }
   ]
 }

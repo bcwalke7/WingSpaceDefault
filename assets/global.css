@@ -94,14 +94,20 @@ body {
 
 
 /* Buttons */
-button,
-.button {
-
+.customButton {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--dark-grey);
+    color: var(--white);
+    text-decoration: none;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background-color 250ms ease;
 }
 
-button:hover,
-.button:hover {
-
+.customButton:hover {
+    background-color: var(--light-grey);
 }
 
 /* Inputs */
